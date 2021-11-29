@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    expose:
+      - 80
+  lhci:
+    #image: "edicom/lighthouse:latest"
+    image: patrickhulce/lhci-client:latest
+    links:
+    - web
+    cap_add:
+      - SYS_ADMIN
+    command: lhci autorun --collect.url=http://web:80 --collect.numberOfRuns=1 --collect.settings.chromeFlags="--no-sandbox –-ignore-certificate-errors" –-upload.target="lhci" –-upload.token="da991059-c620-44ce-993f-36f65d64c0bb" –-upload.serverBaseUrl="https://peaceful-earth-32428.herokuapp.com/"
+    depends_on:
+      - web
