@@ -1,20 +1,11 @@
-version: '3'
-services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    expose:
-      - 80
-  lhci:
-    #image: "edicom/lighthouse:latest"
-    image: patrickhulce/lhci-client:latest
-    links:
-    - web
-    cap_add:
-      - SYS_ADMIN
-    command: lhci autorun --collect.url=http://web:80 --collect.numberOfRuns=1 --collect.settings.chromeFlags="--no-sandbox –-ignore-certificate-errors" –-upload.target="lhci" –-upload.token="LHCI_TOKEN" –-upload.serverBaseUrl="https://peaceful-earth-32428.herokuapp.com/"
-    depends_on:
-      - web
+name: docker-compose-actions-workflow
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose up --abort-on-container-exit --exit-code-from lhci
+        env:
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}

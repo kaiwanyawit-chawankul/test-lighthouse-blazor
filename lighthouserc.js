@@ -2,9 +2,10 @@ module.exports = {
     ci: {
       collect: {
         url:[
-          "http://127.0.0.1:8080",
+          "http://web:80",
         ],
         numberOfRuns: 1,
+        settings: { chromeFlags: '--no-sandbox –-ignore-certificate-errors' },
       },
       assert: {
         preset: "lighthouse:recommended",

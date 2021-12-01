@@ -4,17 +4,29 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      #- ASPNETCORE_URLS=http://+:80;https://+:443
+      - ASPNETCORE_URLS=http://+:80
+      #- ASPNETCORE_HTTPS_PORT=5254 
+      #- ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsABadWayOfPassword
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/DataProtection-Keys/aspnetapp.pfx 
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=\https\aspnetapp.pfx 
     ports:
-      - "8080:80"
+      - "5204:80"
+      #- "5254:443"
     expose:
-      - 80
+      - 5254
   lhci:
-    #image: "edicom/lighthouse:latest"
     image: patrickhulce/lhci-client:latest
     links:
     - web
     cap_add:
       - SYS_ADMIN
-    command: lhci autorun --collect.url=http://web:80 --collect.numberOfRuns=1 --collect.settings.chromeFlags="--no-sandbox –-ignore-certificate-errors" –-upload.target="lhci" –-upload.token="da991059-c620-44ce-993f-36f65d64c0bb" –-upload.serverBaseUrl="https://peaceful-earth-32428.herokuapp.com/"
+    volumes:
+      - ./:/home/:rw
+    command: lhci autorun --config ../../lighthouserc.js --collect.settings.chromeFlags="--no-sandbox –-ignore-certificate-errors"
     depends_on:
       - web
