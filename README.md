@@ -8,4 +8,4 @@ dotnet dev-certs https --trust
 
 
 docker-compose up --build --abort-on-container-exit --exit-code-from lhci
-docker build -f Dockerfil.lhci -t lhci .  
+docker build --no-cache -f Dockerfil.lhci -t lhci .  
